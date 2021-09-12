@@ -7,6 +7,7 @@ use Botble\Base\Forms\Fields\MultiCheckListField;
 use Botble\Base\Forms\Fields\TagField;
 use Botble\Base\Forms\FormAbstract;
 use Botble\Ecommerce\Forms\Fields\CategoryMultiField;
+use Botble\Ecommerce\Forms\Fields\PropertyMultiField;
 use Botble\Ecommerce\Http\Requests\ProductRequest;
 use Botble\Ecommerce\Models\Product;
 use Botble\Ecommerce\Repositories\Interfaces\BrandInterface;
@@ -32,6 +33,11 @@ class ProductForm extends FormAbstract
         $selectedCategories = [];
         if ($this->getModel()) {
             $selectedCategories = $this->getModel()->categories()->pluck('category_id')->all();
+        }
+
+        $selectedProperties = [];
+        if ($this->getModel()) {
+            $selectedProperties = $this->getModel()->properties()->pluck('property_id')->all();
         }
 
         $brands = app(BrandInterface::class)->pluck('name', 'id');
@@ -78,6 +84,7 @@ class ProductForm extends FormAbstract
             ->setValidatorClass(ProductRequest::class)
             ->withCustomFields()
             ->addCustomField('categoryMulti', CategoryMultiField::class)
+            ->addCustomField('propertyMulti', PropertyMultiField::class)
             ->addCustomField('multiCheckList', MultiCheckListField::class)
             ->addCustomField('tags', TagField::class)
             ->add('name', 'text', [
@@ -134,6 +141,22 @@ class ProductForm extends FormAbstract
                 'label_attr' => ['class' => 'control-label'],
                 'choices'    => get_product_categories_with_children(),
                 'value'      => old('categories', $selectedCategories),
+            ])
+            ->add('new_properties', 'text', [
+                'label'      => 'Характеристики',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'placeholder'  => trans('core/base::forms.name_placeholder'),
+                    'data-counter' => 1000,
+                ],
+            ])
+            ->add('custom_properties', 'text', [
+                'label'      => 'Характеристики',
+                'label_attr' => ['class' => 'control-label'],
+                'attr'       => [
+                    'placeholder'  => trans('core/base::forms.name_placeholder'),
+                    'data-counter' => 1000,
+                ],
             ])
             ->add('brand_id', 'customSelect', [
                 'label'      => trans('plugins/ecommerce::products.form.brand'),

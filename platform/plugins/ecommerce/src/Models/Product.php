@@ -140,6 +140,19 @@ class Product extends BaseModel
     /**
      * @return BelongsToMany
      */
+    public function properties()
+    {
+        return $this->belongsToMany(
+            ProductProperty::class,
+            'ec_product_property_product',
+            'product_id',
+            'property_id'
+        );
+    }
+
+    /**
+     * @return BelongsToMany
+     */
     public function productAttributeSets()
     {
         return $this->belongsToMany(

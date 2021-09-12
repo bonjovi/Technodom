@@ -99,6 +99,28 @@ Route::group(['namespace' => 'Botble\Ecommerce\Http\Controllers', 'middleware' =
             ]);
         });
 
+        Route::group(['prefix' => 'properties', 'as' => 'properties.'], function () {
+            Route::resource('', 'PropertyController')
+                ->parameters(['' => 'property']);
+
+            Route::delete('items/destroy', [
+                'as'         => 'deletes',
+                'uses'       => 'PropertyController@deletes',
+                'permission' => 'properties.destroy',
+            ]);
+        });
+
+        Route::group(['prefix' => 'propertycategories', 'as' => 'propertycategories.'], function () {
+            Route::resource('', 'PropertyCategoryController')
+                ->parameters(['' => 'propertycategory']);
+
+            Route::delete('items/destroy', [
+                'as'         => 'deletes',
+                'uses'       => 'PropertyCategoryController@deletes',
+                'permission' => 'propertycategories.destroy',
+            ]);
+        });
+
         Route::group(['prefix' => 'product-collections', 'as' => 'product-collections.'], function () {
             Route::resource('', 'ProductCollectionController')
                 ->parameters(['' => 'product_collection']);
@@ -204,6 +226,11 @@ Route::group(['namespace' => 'Botble\Ecommerce\Http\Controllers\Fronts', 'middle
         Route::get(SlugHelper::getPrefix(Brand::class, 'brands') . '/{slug}', [
             'uses' => 'PublicProductController@getBrand',
             'as'   => 'public.brand',
+        ]);
+
+        Route::get(SlugHelper::getPrefix(Brand::class, 'properties') . '/{slug}', [
+            'uses' => 'PublicProductController@getBrand',
+            'as'   => 'public.property',
         ]);
 
         Route::get(SlugHelper::getPrefix(Product::class, 'products') . '/{slug}', [

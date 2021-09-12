@@ -11,6 +11,8 @@ use Botble\Ecommerce\Http\Middleware\RedirectIfCustomer;
 use Botble\Ecommerce\Http\Middleware\RedirectIfNotCustomer;
 use Botble\Ecommerce\Models\Address;
 use Botble\Ecommerce\Models\Brand;
+use Botble\Ecommerce\Models\Property;
+use Botble\Ecommerce\Models\PropertyCategory;
 use Botble\Ecommerce\Models\Currency;
 use Botble\Ecommerce\Models\Customer;
 use Botble\Ecommerce\Models\Discount;
@@ -40,6 +42,8 @@ use Botble\Ecommerce\Models\Tax;
 use Botble\Ecommerce\Models\Wishlist;
 use Botble\Ecommerce\Repositories\Caches\AddressCacheDecorator;
 use Botble\Ecommerce\Repositories\Caches\BrandCacheDecorator;
+use Botble\Ecommerce\Repositories\Caches\PropertyCacheDecorator;
+use Botble\Ecommerce\Repositories\Caches\PropertyCategoryCacheDecorator;
 use Botble\Ecommerce\Repositories\Caches\CurrencyCacheDecorator;
 use Botble\Ecommerce\Repositories\Caches\CustomerCacheDecorator;
 use Botble\Ecommerce\Repositories\Caches\DiscountCacheDecorator;
@@ -69,6 +73,8 @@ use Botble\Ecommerce\Repositories\Caches\TaxCacheDecorator;
 use Botble\Ecommerce\Repositories\Caches\WishlistCacheDecorator;
 use Botble\Ecommerce\Repositories\Eloquent\AddressRepository;
 use Botble\Ecommerce\Repositories\Eloquent\BrandRepository;
+use Botble\Ecommerce\Repositories\Eloquent\PropertyRepository;
+use Botble\Ecommerce\Repositories\Eloquent\PropertyCategoryRepository;
 use Botble\Ecommerce\Repositories\Eloquent\CurrencyRepository;
 use Botble\Ecommerce\Repositories\Eloquent\CustomerRepository;
 use Botble\Ecommerce\Repositories\Eloquent\DiscountRepository;
@@ -98,6 +104,8 @@ use Botble\Ecommerce\Repositories\Eloquent\TaxRepository;
 use Botble\Ecommerce\Repositories\Eloquent\WishlistRepository;
 use Botble\Ecommerce\Repositories\Interfaces\AddressInterface;
 use Botble\Ecommerce\Repositories\Interfaces\BrandInterface;
+use Botble\Ecommerce\Repositories\Interfaces\PropertyInterface;
+use Botble\Ecommerce\Repositories\Interfaces\PropertyCategoryInterface;
 use Botble\Ecommerce\Repositories\Interfaces\CurrencyInterface;
 use Botble\Ecommerce\Repositories\Interfaces\CustomerInterface;
 use Botble\Ecommerce\Repositories\Interfaces\DiscountInterface;
@@ -192,6 +200,18 @@ class EcommerceServiceProvider extends ServiceProvider
         $this->app->bind(BrandInterface::class, function () {
             return new BrandCacheDecorator(
                 new BrandRepository(new Brand)
+            );
+        });
+
+        $this->app->bind(PropertyInterface::class, function () {
+            return new PropertyCacheDecorator(
+                new PropertyRepository(new Property)
+            );
+        });
+
+        $this->app->bind(PropertyCategoryInterface::class, function () {
+            return new PropertyCategoryCacheDecorator(
+                new PropertyCategoryRepository(new PropertyCategory)
             );
         });
 
@@ -360,6 +380,8 @@ class EcommerceServiceProvider extends ServiceProvider
     {
         SlugHelper::registerModule(Product::class, 'Products');
         SlugHelper::registerModule(Brand::class, 'Brands');
+        SlugHelper::registerModule(Property::class, 'Properties');
+        SlugHelper::registerModule(PropertyCategory::class, 'Property Categories');
         SlugHelper::registerModule(ProductCategory::class, 'Product Categories');
         SlugHelper::registerModule(ProductTag::class, 'Product Tags');
         SlugHelper::setPrefix(Product::class, 'products');
@@ -548,6 +570,24 @@ class EcommerceServiceProvider extends ServiceProvider
                     'permissions' => ['brands.index'],
                 ])
                 ->registerItem([
+                    'id'          => 'cms-plugins-properties',
+                    'priority'    => 6,
+                    'parent_id'   => 'cms-plugins-ecommerce',
+                    'name'        => 'Список характеристик',
+                    'icon'        => 'fa fa-registered',
+                    'url'         => route('properties.index'),
+                    'permissions' => ['properties.index'],
+                ])
+                ->registerItem([
+                    'id'          => 'cms-plugins-propertycategories',
+                    'priority'    => 6,
+                    'parent_id'   => 'cms-plugins-ecommerce',
+                    'name'        => 'Категории характеристик',
+                    'icon'        => 'fa fa-registered',
+                    'url'         => route('propertycategories.index'),
+                    'permissions' => ['propertycategories.index'],
+                ])
+                ->registerItem([
                     'id'          => 'cms-plugins-product-collections',
                     'priority'    => 7,
                     'parent_id'   => 'cms-plugins-ecommerce',
@@ -651,6 +691,8 @@ class EcommerceServiceProvider extends ServiceProvider
             SeoHelper::registerModule([
                 Product::class,
                 Brand::class,
+                Property::class,
+                PropertyCategory::class,
                 ProductCategory::class,
                 ProductTag::class,
             ]);

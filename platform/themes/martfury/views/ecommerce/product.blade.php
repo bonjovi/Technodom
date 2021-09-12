@@ -179,9 +179,75 @@
                                 </div>
                             </div>
                         </div>
+                        <style> 
+                            /* .property__container {
+                                column-count: 2;
+                                column-gap: 2%;
+                            } */
+
+                            .property-category__container {
+                                column-count: 2;
+                                column-gap: 2%;
+                            }
+
+                            @media (max-width: 768px) {
+                                .property__container {
+                                    column-count: 1;
+                                    column-gap: none;
+                                }
+                            }
+
+                            .property__row {
+                                width: 100%;
+                                display: flex;
+                                justify-content: space-between;
+                            }
+
+                            .dots {
+                                flex-grow: 1;
+                                border-top: 1px dashed #000;
+                                margin: 15px 10px 0 10px;
+                                opacity: 0.2;
+                            }
+                            .property__icon {
+
+                            }
+
+                            .custom-tooltip {
+                                display: inline-block;
+                                vertical-align: middle;
+                                text-align: center;
+                                width: 18px;
+                                height: 18px;
+                                cursor: pointer;
+                                border-radius: 50%;
+                                background: #F8BC27;
+                                color: #fff;
+                                justify-content: center;
+                                align-items: center;
+                                font-size: 12px;
+                            }
+                            
+                        </style>
+
+                        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+                        <script src="https://unpkg.com/@popperjs/core@2"></script>
+                        <script src="https://unpkg.com/tippy.js@6"></script>
+                        <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+
+                        <script>
+                            $(document).ready(function() {
+                                tippy('.custom-tooltip', {
+                                    //content: 'My tooltip!',
+                                });
+                            });
+                        </script>
+
                         <div class="ps-product__content ps-tab-root">
                             <ul class="ps-tab-list">
                                 <li class="active"><a href="#tab-description">{{ __('Description') }}</a></li>
+                                <li><a href="#tab-properties">Характеристики</a></li>
+
                                 @if (EcommerceHelper::isReviewEnabled())
                                     <li><a href="#tab-reviews">{{ __('Reviews') }} ({{ $product->reviews_count }})</a></li>
                                 @endif
@@ -318,6 +384,45 @@
                                         <a href="{{ $product->store->url }}" class="more-products">{{ __('More Products from :store',  ['store' => $product->store->name]) }}</a>
                                     </div>
                                 @endif
+
+                                <script>
+                                    $(function() {
+                                        var propertyContainers = $('body').find('.property__container');
+
+                                        $.each(propertyContainers, function(key, value) {
+                                            if($(this).find('> .property__row').length == 0) {
+                                                $(this).hide();
+                                                $(this).prev().hide();
+                                            }
+                                        });
+                                    });
+                                </script>
+
+                                <div class="ps-tab" id="tab-properties">
+                                    @if(is_array($product->custom_properties))
+                                        <div class="property-category__container">
+                                            @foreach($product->property_categories as $property_category)
+                                                <h4>{{ $property_category->name }}</h4>
+                                                <div class="property__container">
+                                                    @foreach($product->custom_properties as $property)
+                                                        @if($property->category_id == $property_category->id && in_array($property->product_category_id, $product->custom_category_ids))
+                                                            <dl class="property__row">
+                                                                <dt>
+                                                                    {{ $property->name }} 
+                                                                    @if($property->description != '') 
+                                                                        <span class="property__icon custom-tooltip"  data-tippy-content="{{ $property->description }}">?</span>
+                                                                    @endif
+                                                                </dt>
+                                                                <div class="dots"></div>
+                                                                <dt>{{ $property->value }}</dt>
+                                                            </dl>
+                                                        @endif    
+                                                    @endforeach
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -20,6 +20,14 @@ if (!defined('BRAND_MODULE_SCREEN_NAME')) {
     define('BRAND_MODULE_SCREEN_NAME', 'brand');
 }
 
+if (!defined('PROPERTY_MODULE_SCREEN_NAME')) {
+    define('PROPERTY_MODULE_SCREEN_NAME', 'property');
+}
+
+if (!defined('PROPERTYCATEGORY_MODULE_SCREEN_NAME')) {
+    define('PROPERTYCATEGORY_MODULE_SCREEN_NAME', 'propertycategory');
+}
+
 if (!defined('PRODUCT_COLLECTION_MODULE_SCREEN_NAME')) {
     define('PRODUCT_COLLECTION_MODULE_SCREEN_NAME', 'product-collection');
 }

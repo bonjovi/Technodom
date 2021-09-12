@@ -14,11 +14,18 @@
                     <li class="nav-item @if ($item['active']) active @endif" id="{{ $item['id'] }}">
                         <a href="{{ $item['url'] }}" class="nav-link">
                             <i class="{{ $item['icon'] }}"></i>
-                            {{ trans($item['name']) }}
+                            {{ $item['id'] == 'cms-plugins-properties' ? 'Характеристики' : trans($item['name']) }}
                             {!! apply_filters(BASE_FILTER_APPEND_MENU_NAME, null, $item['id']) !!}</span>
                         </a>
-                    </li>
+                    </li> 
                 @endforeach
+                {{--@if($menu['id'] == 'cms-plugins-ecommerce')
+                    <li class="nav-item" id="">
+                        <a href="/admin/ecommerce/properties" class="nav-link">
+                            Свойства товаров
+                        </a>
+                    </li>
+                @endif--}}
             </ul>
         @endif
     </li>

@@ -150,6 +150,7 @@ class PublicProductController
         $products = $productService->getProduct($request, null, null, $with, $withCount);
 
         if ($request->ajax()) {
+            
             $total = $products->total();
             $message = $total > 1 ? __(':total Products found', compact('total')) : __(':total Product found',
                 compact('total'));
@@ -173,7 +174,25 @@ class PublicProductController
 
         do_action(PRODUCT_MODULE_SCREEN_NAME);
 
-        return Theme::scope('ecommerce.products', compact('products'),
+
+
+
+        $properties = DB::table('ec_product_property_product')
+        ->selectRaw('ec_product_property_product.id, ec_product_property_product.product_id, ec_product_property_product.property_id, ec_product_property_product.value, ec_properties.name, ec_properties.description')
+        ->join('ec_properties','ec_product_property_product.property_id', '=', 'ec_properties.id')
+        ->get()->toArray();
+
+        foreach($properties as $property) {
+            $properties_list[] = $property->name;
+        }
+
+        $unique_properties = array_unique($properties_list);
+
+        //dd($properties);
+
+
+
+        return Theme::scope('ecommerce.products', compact('products','properties','unique_properties'),
             'plugins/ecommerce::themes.products')->render();
     }
 
@@ -305,6 +324,43 @@ class PublicProductController
                 'take'      => 1,
             ]);
         }
+
+
+
+
+        $properties = DB::table('ec_product_property_product')
+            ->selectRaw('ec_product_property_product.id, ec_product_property_product.product_id, ec_product_property_product.property_id, ec_product_property_product.value, ec_properties.name, ec_properties.category_id, ec_properties.product_category_id, ec_properties.description')
+            ->join('ec_properties','ec_product_property_product.property_id', '=', 'ec_properties.id')
+            ->where('ec_product_property_product.product_id', '=', $product->id)
+            ->get()->toArray();
+        //$properties = json_encode($properties);
+        $product->custom_properties = $properties;
+        //dd($product);
+
+         
+        $categories = DB::table('ec_product_category_product')
+        ->selectRaw('ec_product_category_product.category_id')
+        ->where('ec_product_category_product.product_id', '=', $product->id)
+        ->get()->toArray();
+        //dd($categories);
+
+        foreach($categories as $category) {
+            $categoriesArray[] = $category->category_id;
+        }
+        
+        $product->custom_category_ids = $categoriesArray;
+        //dd($product);
+
+        $property_categories = DB::table('ec_propertycategories')
+        ->selectRaw('ec_propertycategories.id, ec_propertycategories.name')
+        ->get()->toArray();
+        $product->property_categories = $property_categories;
+        //dd($product);
+
+
+
+
+
 
         return Theme::scope('ecommerce.product',
             compact('product', 'selectedAttrs', 'productImages', 'variationDefault', 'productVariation'),
@@ -521,6 +577,14 @@ class PublicProductController
             ->add($category->name, $category->url);
 
         do_action(BASE_ACTION_PUBLIC_RENDER_SINGLE, PRODUCT_CATEGORY_MODULE_SCREEN_NAME, $category);
+
+        // $properties = DB::table('ec_product_property_product')
+        //     ->selectRaw('ec_product_property_product.id, ec_product_property_product.product_id, ec_product_property_product.property_id, ec_product_property_product.value, ec_properties.name')
+        //     ->join('ec_properties','ec_product_property_product.property_id', '=', 'ec_properties.id')
+        //     ->where('ec_product_property_product.product_id', '=', $product->id)
+        //     ->get()->toArray();
+        // $products->custom_properties = $properties;
+        // dd($products);
 
         return Theme::scope('ecommerce.product-category', compact('category', 'products'),
             'plugins/ecommerce::themes.product-category')->render();

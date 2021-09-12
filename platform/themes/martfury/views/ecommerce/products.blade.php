@@ -12,9 +12,54 @@
                     <div class="ps-filter__header d-block d-xl-none">
                         <h3>{{ __('Filter Products') }}</h3><a class="ps-btn--close ps-btn--no-boder" href="#"></a>
                     </div>
+
+                    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+                    <script>
+                        $(function() {
+                            $('aside.widget_shop').map(function() {
+                                var properties = $(this).find('.ps-checkbox');
+                                if(properties.length > 4) {
+                                    $(this).find('figure').addClass('collapsed');
+                                    $('<div class="properties__toggler">Развернуть</div>').appendTo($(this));;
+                                }
+                            });
+
+                            $('body').find('.properties__toggler').on('click', function() {
+                                $(this).toggleClass('collapsed');
+                                $(this).prev().toggleClass('collapsed');
+
+                                if($(this).text() == 'Развернуть') {
+                                    $(this).text('Свернуть');
+                                } else {
+                                    $(this).text('Развернуть');
+                                }
+                            });
+                        });
+                    </script>
+
                     <div class="ps-layout__left-content">
                         <form action="{{ URL::current() }}" data-action="{{ route('public.products') }}" method="GET" id="products-filter-form">
                             @include(Theme::getThemeNamespace() . '::views/ecommerce/includes/filters')
+                            @isset($unique_properties)
+                                @foreach($unique_properties as $unique_property)
+                                    <aside class="widget widget_shop">
+                                        <h4 class="widget-title">{{ $unique_property }}</h4>
+                                        <figure data-height="250" class="ps-custom-scrollbar">
+                                            @foreach($properties as $property) 
+                                                @if($property->name == $unique_property)
+                                                    <div class="ps-checkbox"><input type="checkbox" name="tags[]" id="tag-1667556796-1" value="1" class="form-control product-filter-item">
+                                                        <label for="tag-1667556796-1">
+                                                            <span>
+                                                                {{ $property->value }} <span class="d-inline-block"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </figure>
+                                    </aside>
+                                @endforeach
+                            @endisset
                         </form>
                     </div>
                 </div>

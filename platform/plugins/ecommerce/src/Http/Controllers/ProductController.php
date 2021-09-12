@@ -23,6 +23,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Throwable;
+use DB;
 
 class ProductController extends BaseController
 {
@@ -96,6 +97,34 @@ class ProductController extends BaseController
                 'vendor/core/plugins/ecommerce/libraries/bootstrap-confirmation/bootstrap-confirmation.min.js',
                 'vendor/core/plugins/ecommerce/js/edit-product.js',
             ]);
+
+
+
+
+        $properties = DB::table('ec_product_property_product')
+            ->selectRaw('ec_product_property_product.id, ec_product_property_product.product_id, ec_product_property_product.property_id, ec_product_property_product.value, ec_properties.name, ec_properties.alias, ec_properties.product_category_id')
+            ->join('ec_properties','ec_product_property_product.property_id', '=', 'ec_properties.id')
+            ->where('ec_product_property_product.product_id', '=', $product->id)
+            ->get()->toArray();
+        $json_properties = json_encode($properties);
+        $product->custom_properties = $json_properties;
+        //dd($product);
+
+
+
+        
+
+
+        $new_properties = DB::table('ec_properties')
+            ->selectRaw('*')
+            ->get()->toArray();
+        $new_json_properties = json_encode($new_properties);
+        $product->new_properties = $new_json_properties;
+        //dd($product->new_properties);
+
+        
+
+
 
         return $formBuilder
             ->create(ProductForm::class, ['model' => $product])
@@ -194,6 +223,38 @@ class ProductController extends BaseController
         StoreProductTagService $storeProductTagService
     ) {
         $product = $this->productRepository->findOrFail($id);
+       
+        foreach($request->all() as $request_key => $request_val) {
+            if(!is_array($request_val)) {
+                $nameattr = substr($request_key, 0, 11);
+                if($nameattr == 'customfield') {
+                    $attr_id = explode("_", $request_key);
+                    //echo $attr_id[1];
+
+                    $properties = DB::table('ec_product_property_product')
+                    ->where('id', $attr_id[1])
+                    ->update(['value' => $request_val]);
+
+                }
+
+
+
+
+                $new_nameattr = substr($request_key, 0, 14);
+                if($new_nameattr == 'newcustomfield') {
+                    //dd($request_key);
+                    $new_attr_id = explode("_", $request_key);
+                    //echo $attr_id[1];
+
+                    $new_properties = DB::table('ec_product_property_product')
+                    ->insert(['product_id' => $product->id, 'property_id' => $new_attr_id[1], 'value' => $request_val]);
+
+                }
+            }
+        }
+
+
+        
 
         $product = $service->execute($request, $product);
         $storeProductTagService->execute($request, $product);
