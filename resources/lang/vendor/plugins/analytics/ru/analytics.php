@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'sessions' => 'Сессии',
+    'visitors' => 'Посетители',
+    'pageviews' => 'Просмотры страниц',
+    'bounce_rate' => 'Показатель отказов',
+    'page_session' => 'Страницы / сеансы',
+    'avg_duration' => 'Сред. Продолжительность',
+    'percent_new_session' => 'Процент новых сеансов',
+    'new_users' => 'Новые посетители',
+    'visits' => 'посещения',
+    'views' => 'Просмотры',
+    'view_id_not_specified' => 'Вы должны предоставить действительный идентификатор представления. Описание: <a href="https://docs.botble.com/cms/:version/plugin-analytics" target="_blank">https://docs.botble.com/cms/:version/plugin-analytics</a>',
+    'credential_is_not_valid' => 'Учетные данные Google Analytics недействительны. Описание: <a href="https://docs.botble.com/cms/:version/plugin-analytics" target="_blank">https://docs.botble.com/cms/:version/plugin-analytics</a>',
+    'start_date_can_not_before_end_date' => 'Дата начала :start_date не может быть позже даты окончания :end_date',
+    'wrong_configuration' => 'Для просмотра аналитики вам необходимо получить идентификатор клиента Google Analytics и добавить его в свои настройки. <br /> Вам также потребуются учетные данные JSON. <br /> Описание: <a href="https://docs.botble.com/cms/:version/plugin-analytics" target="_blank">https://docs.botble.com/cms/:version/plugin-analytics</a>',
+    'settings' => [
+        'title' => 'Google Analytics',
+        'description' => 'Настроить учетные данные для Google Analytics',
+        'tracking_code' => 'Tracking ID',
+        'tracking_code_placeholder' => 'Пример: GA-12586526-8',
+        'view_id' => 'View ID',
+        'view_id_description' => 'Google Analytics View ID',
+        'json_credential' => 'Учетные данные службы',
+        'json_credential_description' => 'Учетные данные службы',
+    ],
+    'widget_analytics_page' => 'Самые посещаемые страницы',
+    'widget_analytics_browser' => 'Лучшие браузеры',
+    'widget_analytics_referrer' => 'Лучшие источники перехода',
+    'widget_analytics_general' => 'Аналитика сайта',
+];
