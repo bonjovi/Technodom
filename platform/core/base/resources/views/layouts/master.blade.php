@@ -30,16 +30,18 @@
         
         var currentSlugs = [];
         $.each(data, function(key, value) {
-            currentSlugs.push(value.slug);
+            currentSlugs.push(value.alias);
             if(checkedCategoriesArray.includes(value.product_category_id)) {
                 $('<div class="property__row"><label>'+value.name+'</label><input class="form-control" type="text" value="'+value.value+'" name="customfield_'+value.id+'"></div>').insertAfter(target);
             }
         });
 
+        //console.log("Current slugs: "+currentSlugs);
+
         var new_target = $('#new_properties');
         var new_json = new_target.val();
         var new_data = JSON.parse(new_json);
-        //console.log(data);
+        //console.log(new_data);
         var newSlugs = [];
         function in_array(needle, haystack, strict) {
             var found = false, key, strict = !!strict;
@@ -53,15 +55,15 @@
         }
 
         $.each(new_data, function(key, value) {
-            if(!in_array(value.slug, currentSlugs)) {
-                newSlugs.push(value.slug);
+            if(!in_array(value.alias, currentSlugs)) {
+                newSlugs.push(value.alias);
             }
         });
 
-        console.log(newSlugs);
+        //console.log(newSlugs);
 
         $.each(new_data, function(key, value) {
-            if(in_array(value.slug, newSlugs)) {
+            if(in_array(value.alias, newSlugs)) {
                 $('<div class="property__row"><label>'+value.name+'</label><input class="form-control" type="text" value="" name="newcustomfield_'+value.id+'"></div>').insertAfter(target);
             }
         });
