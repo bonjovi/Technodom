@@ -182,13 +182,15 @@ class PublicProductController
         ->join('ec_properties','ec_product_property_product.property_id', '=', 'ec_properties.id')
         ->get()->toArray();
 
-        foreach($properties as $property) {
-            $properties_list[] = $property->name;
+        if($properties) {
+            foreach($properties as $property) {
+                $properties_list[] = $property->name;
+            }
+        } else {
+            $properties_list = [];
         }
 
         $unique_properties = array_unique($properties_list);
-
-        //dd($properties);
 
 
 
