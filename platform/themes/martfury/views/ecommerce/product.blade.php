@@ -150,6 +150,12 @@
                                             <a class="js-add-to-wishlist-button" href="#" data-url="{{ route('public.wishlist.add', $product->id) }}"><i class="icon-heart"></i></a>
                                             <a class="js-add-to-compare-button" href="#" data-url="{{ route('public.compare.add', $product->id) }}" title="{{ __('Compare') }}"><i class="icon-chart-bars"></i></a>
                                         </div>
+                                        <div class="ks-widget"
+                                         data-template="button"
+                                         data-merchant-sku="{{ $product->sku }}"
+                                         data-merchant-code="Ecomi"
+                                         data-city="750000000"
+                                        ></div>
                                     </div>
                                 </form>
                                 <div class="ps-product__specification">
@@ -227,6 +233,18 @@
                                 align-items: center;
                                 font-size: 12px;
                             }
+
+                            .property-category__container h4 {
+                                font-size: 21px;
+                            }
+
+                            .property__container .property__row:last-child {
+                                margin-bottom: 20px;
+                            }
+
+                            .property__row dt:last-child {
+                                font-weight: 300;
+                            }
                             
                         </style>
 
@@ -242,6 +260,25 @@
                                 });
                             });
                         </script>
+                        <!-- script кнопки КАСПИ БАНК -->
+                       <!--  <script>(function(d, s, id) {
+                       var js, kjs;
+                       if (d.getElementById(id)) return;
+                       js = d.createElement(s); js.id = id;
+                       js.src = 'https://kaspi.kz/kaspibutton/widget/ks-wi_ext.js';
+                       kjs = document.getElementsByTagName(s)[0]
+                       kjs.parentNode.insertBefore(js, kjs);
+                                           }(document, 'script', 'KS-Widget'));</script>
+                                             
+                                           Example: adding another button placeholder dynamically after 1sec
+                                             <script>
+                       setTimeout(function () {
+                           document.getElementById('dynamic').innerHTML = '<div class="ks-widget" data-template="button" data-merchant-sku="{{ $product->sku }}" data-merchant-code="Ecomi" data-city="750000000" ></div>'
+                       // you should run this method to recheck buttons in DOM:
+                       ksWidgetInitializer.reinit()
+                       }, 1000)
+                                           </script> -->
+                     <!-- end script кнопки КАСПИ БАНК -->
 
                         <div class="ps-product__content ps-tab-root">
                             <ul class="ps-tab-list">
@@ -405,12 +442,12 @@
                                                 <h4>{{ $property_category->name }}</h4>
                                                 <div class="property__container">
                                                     @foreach($product->custom_properties as $property)
-                                                        @if($property->category_id == $property_category->id && in_array($property->product_category_id, $product->custom_category_ids))
+                                                        @if($property->category_id == $property_category->id && in_array($property->product_category_id, $product->custom_category_ids) && $property->value != 'null')
                                                             <dl class="property__row">
                                                                 <dt>
                                                                     {{ $property->name }} 
                                                                     @if($property->description != '') 
-                                                                        <span class="property__icon custom-tooltip"  data-tippy-content="{{ $property->description }}">?</span>
+                                                                        <span class="property__icon custom-tooltip"  data-tippy-content="{{ strip_tags($property->description) }}">?</span>
                                                                     @endif
                                                                 </dt>
                                                                 <div class="dots"></div>
