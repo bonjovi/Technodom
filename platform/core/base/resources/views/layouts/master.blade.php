@@ -63,7 +63,7 @@
         //console.log(newSlugs);
 
         $.each(new_data, function(key, value) {
-            if(in_array(value.alias, newSlugs)) {
+            if(in_array(value.alias, newSlugs) && checkedCategoriesArray.includes(value.product_category_id)) {
                 $('<div class="property__row"><label>'+value.name+'</label><input class="form-control" type="text" value="" name="newcustomfield_'+value.id+'"></div>').insertAfter(target);
             }
         });
